@@ -3,7 +3,7 @@ import axios from "axios";
 import { useLanguage } from "../context/LanguageContext";
 
 const Services = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -47,14 +47,26 @@ const Services = () => {
         </div>
 
         <div className="services-grid">
-          {displayServices.map((service, index) => (
-            <div className="service-card" key={service.id || index}>
-              {/* Use API icon if available, else generic or fallback icon */}
-              <span className="service-icon">{service.icon || "🛠️"}</span>
-              <h4>{service.title}</h4>
-              <p>{service.description || service.desc}</p>
-            </div>
-          ))}
+          {displayServices.map((service, index) => {
+            // Choose title/desc based on current language, fallback to English/default
+            const displayTitle =
+              language === "np"
+                ? service.title_np || service.title
+                : service.title;
+            const displayDesc =
+              language === "np"
+                ? service.description_np || service.desc || service.description
+                : service.desc || service.description;
+
+            return (
+              <div className="service-card" key={service.id || index}>
+                {/* Use API icon if available, else generic or fallback icon */}
+                <span className="service-icon">{service.icon || "🛠️"}</span>
+                <h4>{displayTitle}</h4>
+                <p>{displayDesc}</p>
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>
