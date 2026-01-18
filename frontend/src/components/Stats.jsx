@@ -12,15 +12,15 @@ const Stats = () => {
             <span className="stat-label">{t("stats_assets")}</span>
           </div>
           <div className="stat-item">
-            <span className="stat-number">17,531</span>
+            <span className="stat-number">2000</span>
             <span className="stat-label">{t("stats_shareholders")}</span>
           </div>
           <div className="stat-item">
-            <span className="stat-number">12</span>
+            <span className="stat-number">2</span>
             <span className="stat-label">{t("stats_branches")}</span>
           </div>
           <div className="stat-item">
-            <span className="stat-number">76</span>
+            <span className="stat-number">35</span>
             <span className="stat-label">{t("stats_staff")}</span>
           </div>
         </div>
