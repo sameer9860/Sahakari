@@ -39,6 +39,9 @@ const translations = {
     serv_scholar_desc: "Supporting education for member's children.",
     serv_agri: "Agriculture Support",
     serv_agri_desc: "Providing seeds, fertilizers, and market access.",
+    news_title: "Latest News & Events",
+    news_subtitle: "Stay updated with our latest activities and announcements.",
+    read_more: "Read More",
     address: "Neelakantha 4, Dhading",
     footer_desc:
       "A trusted agriculture multiple cooperative organization committed to the prosperity of its members.",
@@ -81,6 +84,9 @@ const translations = {
     serv_scholar_desc: "सदस्यका बालबालिकाको शिक्षामा सहयोग।",
     serv_agri: "कृषि सहयोग",
     serv_agri_desc: "बीउ, मल, र बजार पहुँच प्रदान गर्दै।",
+    news_title: "ताजा समाचार र घटनाहरू",
+    news_subtitle: "हाम्रा नवीनतम गतिविधिहरू र घोषणाहरूसँग अपडेट रहनुहोस्।",
+    read_more: "थप पढ्नुहोस्",
     address: "नीलकण्ठ ४, धादिङ",
     footer_desc:
       "सदस्यहरूको समृद्धिका लागि प्रतिबद्ध एक विश्वसनीय कृषि बहुउद्देश्यीय सहकारी संस्था।",

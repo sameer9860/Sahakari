@@ -2,12 +2,18 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import { transliterateToNepali } from "../utils/nepaliTransliterate";
 
 const AdminDashboard = () => {
   const [activeSection, setActiveSection] = useState("services");
   
   // Post State
-  const [postData, setPostData] = useState({ title: "", content: "" });
+  const [postData, setPostData] = useState({ 
+    title: "", 
+    content: "", 
+    title_np: "", 
+    content_np: "" 
+  });
   const [postImage, setPostImage] = useState(null);
   const [postStatus, setPostStatus] = useState("");
   const [posts, setPosts] = useState([]);
@@ -17,6 +23,8 @@ const AdminDashboard = () => {
   const [serviceData, setServiceData] = useState({
     title: "",
     description: "",
+    title_np: "",
+    description_np: "",
     icon: "🌟",
   });
   const [serviceStatus, setServiceStatus] = useState("");
@@ -51,7 +59,23 @@ const AdminDashboard = () => {
 
   // --- Post Handlers ---
   const handlePostChange = (e) => {
-    setPostData({ ...postData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    let updatedData = { ...postData, [name]: value };
+    
+    // Auto-transliterate when typing directly in Nepali field
+    // Always transliterate if the current input contains Roman characters
+    if (name === 'title_np' || name === 'content_np') {
+      // Check if current value has any Roman characters (a-z, A-Z)
+      const hasRomanChars = /[a-zA-Z]/.test(value);
+      
+      if (hasRomanChars && value) {
+        // Transliterate the entire value
+        const transliterated = transliterateToNepali(value);
+        updatedData[name] = transliterated;
+      }
+    }
+    
+    setPostData(updatedData);
   };
 
   const handleImageChange = (e) => {
@@ -63,6 +87,8 @@ const AdminDashboard = () => {
     const formData = new FormData();
     formData.append("title", postData.title);
     formData.append("content", postData.content);
+    formData.append("title_np", postData.title_np || "");
+    formData.append("content_np", postData.content_np || "");
     if (postImage) {
       formData.append("image", postImage);
     }
@@ -81,7 +107,7 @@ const AdminDashboard = () => {
         });
         setPostStatus("Post created successfully!");
       }
-      setPostData({ title: "", content: "" });
+      setPostData({ title: "", content: "", title_np: "", content_np: "" });
       setPostImage(null);
       setEditingPost(null);
       fetchPosts();
@@ -106,17 +132,38 @@ const AdminDashboard = () => {
 
   const editPost = (post) => {
     setEditingPost(post);
-    setPostData({ title: post.title, content: post.content });
+    setPostData({ 
+      title: post.title || "", 
+      content: post.content || "",
+      title_np: post.title_np || "",
+      content_np: post.content_np || ""
+    });
   };
 
   const cancelEditPost = () => {
     setEditingPost(null);
-    setPostData({ title: "", content: "" });
+    setPostData({ title: "", content: "", title_np: "", content_np: "" });
   };
 
   // --- Service Handlers ---
   const handleServiceChange = (e) => {
-    setServiceData({ ...serviceData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    let updatedData = { ...serviceData, [name]: value };
+    
+    // Auto-transliterate when typing directly in Nepali field
+    // Always transliterate if the current input contains Roman characters
+    if (name === 'title_np' || name === 'description_np') {
+      // Check if current value has any Roman characters (a-z, A-Z)
+      const hasRomanChars = /[a-zA-Z]/.test(value);
+      
+      if (hasRomanChars && value) {
+        // Transliterate the entire value
+        const transliterated = transliterateToNepali(value);
+        updatedData[name] = transliterated;
+      }
+    }
+    
+    setServiceData(updatedData);
   };
 
   const handleServiceSubmit = async (e) => {
@@ -132,7 +179,13 @@ const AdminDashboard = () => {
         await axios.post("http://localhost:8000/api/services/", serviceData);
         setServiceStatus("Service created successfully!");
       }
-      setServiceData({ title: "", description: "", icon: "🌟" });
+      setServiceData({ 
+        title: "", 
+        description: "", 
+        title_np: "", 
+        description_np: "", 
+        icon: "🌟" 
+      });
       setEditingService(null);
       fetchServices();
     } catch (error) {
@@ -157,15 +210,23 @@ const AdminDashboard = () => {
   const editService = (service) => {
     setEditingService(service);
     setServiceData({
-      title: service.title,
-      description: service.description,
-      icon: service.icon,
+      title: service.title || "",
+      description: service.description || "",
+      title_np: service.title_np || "",
+      description_np: service.description_np || "",
+      icon: service.icon || "🌟",
     });
   };
 
   const cancelEditService = () => {
     setEditingService(null);
-    setServiceData({ title: "", description: "", icon: "🌟" });
+    setServiceData({ 
+      title: "", 
+      description: "", 
+      title_np: "", 
+      description_np: "", 
+      icon: "🌟" 
+    });
   };
 
   return (
@@ -292,7 +353,7 @@ const AdminDashboard = () => {
                           fontWeight: "500",
                         }}
                       >
-                        Service Title
+                        Service Title (English)
                       </label>
                       <input
                         type="text"
@@ -311,7 +372,26 @@ const AdminDashboard = () => {
                           fontWeight: "500",
                         }}
                       >
-                        Description
+                        Service Title (नेपाली) - Type in Romanized Nepali (auto-converts)
+                      </label>
+                      <input
+                        type="text"
+                        name="title_np"
+                        value={serviceData.title_np}
+                        onChange={handleServiceChange}
+                        style={inputStyle}
+                        placeholder="Optional - Type in Roman: 'bachat yojana' (auto converts to Devanagari)"
+                      />
+                    </div>
+                    <div style={{ marginBottom: "1rem" }}>
+                      <label
+                        style={{
+                          display: "block",
+                          marginBottom: "0.5rem",
+                          fontWeight: "500",
+                        }}
+                      >
+                        Description (English)
                       </label>
                       <textarea
                         name="description"
@@ -320,6 +400,25 @@ const AdminDashboard = () => {
                         rows="3"
                         style={inputStyle}
                         required
+                      ></textarea>
+                    </div>
+                    <div style={{ marginBottom: "1rem" }}>
+                      <label
+                        style={{
+                          display: "block",
+                          marginBottom: "0.5rem",
+                          fontWeight: "500",
+                        }}
+                      >
+                        Description (नेपाली) - Type in Romanized Nepali (auto-converts)
+                      </label>
+                      <textarea
+                        name="description_np"
+                        value={serviceData.description_np}
+                        onChange={handleServiceChange}
+                        rows="3"
+                        style={inputStyle}
+                        placeholder="Optional - Type in Roman: 'sajilo ra saro bachat' (auto converts to Devanagari)"
                       ></textarea>
                     </div>
                     <div style={{ marginBottom: "1.5rem" }}>
@@ -550,7 +649,7 @@ const AdminDashboard = () => {
                           fontWeight: "500",
                         }}
                       >
-                        Post Title
+                        Post Title (English)
                       </label>
                       <input
                         type="text"
@@ -569,7 +668,26 @@ const AdminDashboard = () => {
                           fontWeight: "500",
                         }}
                       >
-                        Content
+                        Post Title (नेपाली) - Type in Romanized Nepali (auto-converts)
+                      </label>
+                      <input
+                        type="text"
+                        name="title_np"
+                        value={postData.title_np}
+                        onChange={handlePostChange}
+                        style={inputStyle}
+                        placeholder="Optional - Type in Roman: 'mero nepali lekha' (auto converts to Devanagari)"
+                      />
+                    </div>
+                    <div style={{ marginBottom: "1rem" }}>
+                      <label
+                        style={{
+                          display: "block",
+                          marginBottom: "0.5rem",
+                          fontWeight: "500",
+                        }}
+                      >
+                        Content (English)
                       </label>
                       <textarea
                         name="content"
@@ -578,6 +696,25 @@ const AdminDashboard = () => {
                         rows="4"
                         style={inputStyle}
                         required
+                      ></textarea>
+                    </div>
+                    <div style={{ marginBottom: "1rem" }}>
+                      <label
+                        style={{
+                          display: "block",
+                          marginBottom: "0.5rem",
+                          fontWeight: "500",
+                        }}
+                      >
+                        Content (नेपाली) - Type in Romanized Nepali (auto-converts)
+                      </label>
+                      <textarea
+                        name="content_np"
+                        value={postData.content_np}
+                        onChange={handlePostChange}
+                        rows="4"
+                        style={inputStyle}
+                        placeholder="Optional - Type in Roman: 'hamro sahakari kura' (auto converts to Devanagari)"
                       ></textarea>
                     </div>
                     <div style={{ marginBottom: "1.5rem" }}>

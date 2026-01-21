@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import axios from "axios";
 import { useLanguage } from "../context/LanguageContext";
 
@@ -7,15 +7,18 @@ const Services = () => {
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Fallback services if API is empty or fails
-  const fallbackServices = [
-    { icon: "💰", title: t("serv_saving"), desc: t("serv_saving_desc") },
-    { icon: "🤝", title: t("serv_loan"), desc: t("serv_loan_desc") },
-    { icon: "📱", title: t("serv_mobile"), desc: t("serv_mobile_desc") },
-    { icon: "🌍", title: t("serv_remit"), desc: t("serv_remit_desc") },
-    { icon: "🎓", title: t("serv_scholar"), desc: t("serv_scholar_desc") },
-    { icon: "🌾", title: t("serv_agri"), desc: t("serv_agri_desc") },
-  ];
+  // Fallback services if API is empty or fails - update when language changes
+  const fallbackServices = useMemo(
+    () => [
+      { icon: "💰", title: t("serv_saving"), desc: t("serv_saving_desc") },
+      { icon: "🤝", title: t("serv_loan"), desc: t("serv_loan_desc") },
+      { icon: "📱", title: t("serv_mobile"), desc: t("serv_mobile_desc") },
+      { icon: "🌍", title: t("serv_remit"), desc: t("serv_remit_desc") },
+      { icon: "🎓", title: t("serv_scholar"), desc: t("serv_scholar_desc") },
+      { icon: "🌾", title: t("serv_agri"), desc: t("serv_agri_desc") },
+    ],
+    [t, language]
+  );
 
   useEffect(() => {
     const fetchServices = async () => {

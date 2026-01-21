@@ -29,8 +29,8 @@ const News = () => {
     >
       <div className="container">
         <div className="section-title">
-          <h2>Latest News & Events</h2>
-          <p>Stay updated with our latest activities and announcements.</p>
+          <h2>{t("news_title")}</h2>
+          <p>{t("news_subtitle")}</p>
         </div>
 
         <div
@@ -102,7 +102,7 @@ const News = () => {
                       textDecoration: "none",
                     }}
                   >
-                    Read More &rarr;
+                    {t("read_more")} &rarr;
                   </a>
                 </div>
               </div>
